@@ -32,7 +32,8 @@ export function OneTapDonation() {
 
   const fetchStats = async () => {
     try {
-      const response = await fetch('/api/donate')
+      // Fetch combined platform stats (one-tap + pool donations)
+      const response = await fetch('/api/platform/stats')
       const data = await response.json()
       if (data.stats) {
         setStats(data.stats)

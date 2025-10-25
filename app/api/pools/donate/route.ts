@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createPoolDonation, updatePoolStats, updateUserDonation, getAllPoolDonations } from '@/lib/storage'
-import { PLATFORM_CONFIG } from '@/lib/constants'
+import { calculateRewardPoints } from '@/lib/constants'
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,8 +13,12 @@ export async function POST(request: NextRequest) {
 
     const solAmount = parseFloat(amount)
 
-    // Calculate rewards
-    const rewardPoints = Math.floor(solAmount * PLATFORM_CONFIG.POINTS_PER_SOL)
+    // Calculate rewards using unified formula: 1 SOL = 1000 points
+    const rewardPoints = calculateRewardPoints(solAmount)
+
+    // Update pool stats FIRST (total raised + donor count)
+    // This must happen before creating the donation record so the "new donor" check works
+    await updatePoolStats(pool, solAmount, donor)
 
     // Create pool donation record
     const donation = await createPoolDonation({
@@ -29,9 +33,6 @@ export async function POST(request: NextRequest) {
     if (!donation) {
       return NextResponse.json({ error: 'Failed to record donation' }, { status: 500 })
     }
-
-    // Update pool stats (total raised + donor count)
-    await updatePoolStats(pool, solAmount, donor)
 
     // Update donor stats and reward points
     await updateUserDonation(donor, solAmount, rewardPoints)

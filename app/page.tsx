@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
+import { WalletButton } from '@/components/wallet/WalletButton'
 import { DonationPools } from '@/components/donation/DonationPools'
 import { OneTapDonation } from '@/components/donation/OneTapDonation'
 import { TippingSystem } from '@/components/tips/TippingSystem'
@@ -57,7 +57,7 @@ export default function Home() {
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                 <span className="text-sm font-medium">Solana Devnet</span>
               </div>
-              <WalletMultiButton className="!bg-black hover:!bg-gray-800 !rounded-xl !h-12" />
+              <WalletButton />
             </div>
           </div>
         </div>

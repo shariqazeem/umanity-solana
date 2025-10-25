@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createTip, updateSenderStats, updateRecipientStats } from '@/lib/storage'
-import { PLATFORM_CONFIG } from '@/lib/constants'
+import { calculateRewardPoints } from '@/lib/constants'
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,10 +13,8 @@ export async function POST(request: NextRequest) {
 
     const solAmount = parseFloat(amount)
 
-    // Calculate rewards: 10 points per tip + bonus based on amount
-    const baseReward = 10
-    const amountBonus = Math.floor(solAmount * PLATFORM_CONFIG.POINTS_PER_SOL)
-    const totalReward = baseReward + amountBonus
+    // Calculate rewards using unified formula: 1 SOL = 1000 points
+    const totalReward = calculateRewardPoints(solAmount)
 
     // Create tip record
     const tip = await createTip({

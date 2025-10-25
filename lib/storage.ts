@@ -294,7 +294,7 @@ export async function getAllTips(): Promise<Tip[]> {
   }))
 }
 
-// Get donation stats
+// Get donation stats (one-tap donations only)
 export async function getDonationStats() {
   const donations = await getAllDonations()
   const uniqueDonors = new Set(donations.map(d => d.donor))
@@ -306,6 +306,40 @@ export async function getDonationStats() {
     pendingDistribution: donations
       .filter(d => d.status === 'pending')
       .reduce((sum, d) => sum + d.amount, 0)
+  }
+}
+
+// Get COMBINED platform stats (one-tap donations + pool donations)
+export async function getPlatformStats() {
+  const oneTapDonations = await getAllDonations()
+  const poolDonations = await getAllPoolDonations()
+
+  // Combine all donors
+  const allDonors = new Set([
+    ...oneTapDonations.map(d => d.donor),
+    ...poolDonations.map(d => d.donor)
+  ])
+
+  const totalDonations =
+    oneTapDonations.reduce((sum, d) => sum + d.amount, 0) +
+    poolDonations.reduce((sum, d) => sum + d.amount, 0)
+
+  const totalRewards =
+    oneTapDonations.reduce((sum, d) => sum + d.rewardPointsEarned, 0) +
+    poolDonations.reduce((sum, d) => sum + d.rewardPointsEarned, 0)
+
+  const pendingDistribution = oneTapDonations
+    .filter(d => d.status === 'pending')
+    .reduce((sum, d) => sum + d.amount, 0)
+
+  return {
+    totalDonations,
+    totalDonors: allDonors.size,
+    totalRewardsDistributed: totalRewards,
+    pendingDistribution,
+    oneTapCount: oneTapDonations.length,
+    poolDonationCount: poolDonations.length,
+    totalTransactions: oneTapDonations.length + poolDonations.length
   }
 }
 

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createDonation, updateUserDonation, getAllDonations, getDonationStats } from '@/lib/storage'
-import { PLATFORM_CONFIG } from '@/lib/constants'
+import { calculateRewardPoints } from '@/lib/constants'
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,8 +13,8 @@ export async function POST(request: NextRequest) {
 
     const solAmount = parseFloat(amount)
 
-    // Calculate rewards
-    const rewardPoints = Math.floor(solAmount * PLATFORM_CONFIG.POINTS_PER_SOL)
+    // Calculate rewards using unified formula: 1 SOL = 1000 points
+    const rewardPoints = calculateRewardPoints(solAmount)
 
     // Create donation record
     const donation = await createDonation({

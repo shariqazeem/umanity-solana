@@ -13,12 +13,15 @@ export const WalletProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const network = WalletAdapterNetwork.Devnet
   const endpoint = useMemo(() => clusterApiUrl(network), [network])
 
+  // Wallets should be created once and memoized to prevent duplicate keys
+  // Empty dependency array ensures they're only created once
   const wallets = useMemo(
     () => [
       new PhantomWalletAdapter(),
       new SolflareWalletAdapter(),
       new TorusWalletAdapter(),
     ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   )
 

@@ -13,28 +13,29 @@ interface Pool {
 }
 
 // Static pool display data (icons, wallets, categories)
+// All pools use the treasury wallet - you can distribute funds to specific causes later
 const POOL_DISPLAY_DATA: Record<string, { emoji: string; wallet: string; category: string; verified: boolean }> = {
   'medical': {
     emoji: '🏥',
-    wallet: 'Med1ca1EmergencyWa11etAddressHere1111111',
+    wallet: 'BAScBKuDXCqdHxcoqdaDrUyJtFVtjBM5wS8tLd6tsgpy',
     category: 'Healthcare',
     verified: true
   },
   'education': {
     emoji: '📚',
-    wallet: 'Education4A11Wa11etAddressHere1111111111',
+    wallet: 'BAScBKuDXCqdHxcoqdaDrUyJtFVtjBM5wS8tLd6tsgpy',
     category: 'Education',
     verified: true
   },
   'disaster': {
     emoji: '🆘',
-    wallet: 'DisasterRe1iefWa11etAddressHere11111111',
+    wallet: 'BAScBKuDXCqdHxcoqdaDrUyJtFVtjBM5wS8tLd6tsgpy',
     category: 'Emergency',
     verified: true
   },
   'water': {
     emoji: '💧',
-    wallet: 'C1eanWaterAccessWa11etAddressHere111111',
+    wallet: 'BAScBKuDXCqdHxcoqdaDrUyJtFVtjBM5wS8tLd6tsgpy',
     category: 'Infrastructure',
     verified: true
   }
@@ -90,8 +91,8 @@ export function DonationPools() {
       try {
         poolWallet = new PublicKey(displayData.wallet)
       } catch (e) {
-        // Fallback wallet if invalid
-        poolWallet = new PublicKey('GjJyeC5cWPHsUYmXZ8nQ4rE8TvP3qX7zR4WvN8FkPump')
+        // Fallback to treasury wallet if invalid
+        poolWallet = new PublicKey('BAScBKuDXCqdHxcoqdaDrUyJtFVtjBM5wS8tLd6tsgpy')
       }
 
       const transaction = new Transaction().add(

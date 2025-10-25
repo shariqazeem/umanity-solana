@@ -2,22 +2,33 @@
 export const PLATFORM_CONFIG = {
   // Platform treasury wallet - ALL donations go here first
   // You control this wallet and can distribute funds to verified charities
-  TREASURY_WALLET: 'GjJyeC5cWPHsUYmXZ8nQ4rE8TvP3qX7zR4WvN8FkPump', // Replace with YOUR wallet
+  TREASURY_WALLET: 'BAScBKuDXCqdHxcoqdaDrUyJtFVtjBM5wS8tLd6tsgpy', // Your treasury wallet
 
   // Platform fee (0% for hackathon, can add small fee later)
   PLATFORM_FEE_PERCENT: 0,
 
-  // Reward system
-  POINTS_PER_SOL: 1000, // 1 SOL = 1000 points
+  // Unified Reward System - ALL activities use the same formula
+  POINTS_PER_SOL: 1000, // 1 SOL = 1000 points (base rate)
   POINTS_TO_TOKEN_RATIO: 100, // 100 points = 1 future token
 }
 
+// Unified reward calculation function
+export function calculateRewardPoints(solAmount: number): number {
+  // Simple, consistent formula across all platform activities:
+  // Donations, Tips, and Pool Contributions all use the same rate
+  // 1 SOL = 1000 points
+  // 0.01 SOL = 10 points
+  // 0.1 SOL = 100 points
+  return Math.floor(solAmount * PLATFORM_CONFIG.POINTS_PER_SOL)
+}
+
 // Verified charity partners (where funds will eventually go)
+// Currently all use treasury wallet - update with real charity wallets when you partner with them
 export const VERIFIED_CHARITIES = [
   {
     id: 'medical',
     name: 'International Medical Relief',
-    wallet: '5PooLMedica1WalletWi11BeHereAfterVerification1', // Verified charity wallet
+    wallet: 'BAScBKuDXCqdHxcoqdaDrUyJtFVtjBM5wS8tLd6tsgpy', // Treasury wallet (update with charity wallet later)
     category: 'Healthcare',
     verified: true,
     description: 'Provides emergency medical care worldwide',
@@ -28,7 +39,7 @@ export const VERIFIED_CHARITIES = [
   {
     id: 'education',
     name: 'Global Education Fund',
-    wallet: '5PooLEducationWalletWi11BeHereAfterVerif1cation',
+    wallet: 'BAScBKuDXCqdHxcoqdaDrUyJtFVtjBM5wS8tLd6tsgpy', // Treasury wallet (update with charity wallet later)
     category: 'Education',
     verified: true,
     description: 'Scholarships for underprivileged children',
@@ -39,7 +50,7 @@ export const VERIFIED_CHARITIES = [
   {
     id: 'disaster',
     name: 'Emergency Response Network',
-    wallet: '5PooLDisasterWalletWi11BeHereAfterVerification',
+    wallet: 'BAScBKuDXCqdHxcoqdaDrUyJtFVtjBM5wS8tLd6tsgpy', // Treasury wallet (update with charity wallet later)
     category: 'Emergency',
     verified: true,
     description: 'Rapid response to natural disasters',

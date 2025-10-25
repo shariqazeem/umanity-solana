@@ -28,6 +28,8 @@ export function TippingSystem() {
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
   const [txSignature, setTxSignature] = useState('')
+  const [showRegistration, setShowRegistration] = useState(false)
+  const [dismissedBanner, setDismissedBanner] = useState(false)
 
   useEffect(() => {
     if (publicKey) {
@@ -125,6 +127,7 @@ export function TippingSystem() {
       if (data.success) {
         setIsRegistered(true)
         setCurrentUser(data.user)
+        setShowRegistration(false)
         fetchUsers()
       }
     } catch (error) {
@@ -239,108 +242,146 @@ export function TippingSystem() {
     )
   }
 
-  if (!isRegistered) {
-    return (
-      <div className="max-w-2xl mx-auto">
-        <div className="glass-card rounded-3xl p-12">
-          <div className="text-center mb-8">
-            <div className="text-6xl mb-6">✨</div>
-            <h3 className="text-4xl font-bold mb-4">Register Your Tipping Profile</h3>
-            <p className="text-gray-600 text-lg">
-              Create your profile to receive tips and start earning rewards
-            </p>
-          </div>
-
-          {/* Benefits */}
-          <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-6 mb-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-              <div>
-                <div className="text-3xl mb-2">💰</div>
-                <div className="font-bold text-sm">Receive Tips</div>
-              </div>
-              <div>
-                <div className="text-3xl mb-2">⚡</div>
-                <div className="font-bold text-sm">Instant Transfer</div>
-              </div>
-              <div>
-                <div className="text-3xl mb-2">🎁</div>
-                <div className="font-bold text-sm">Earn Rewards</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Username *
-              </label>
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
-                placeholder="alice_dev"
-                maxLength={30}
-                className="w-full rounded-xl px-4 py-4 text-lg border border-black/10 focus:border-black/30 focus:ring-2 focus:ring-black/10"
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                3-30 characters, lowercase letters, numbers, and underscores only
-              </p>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Display Name *
-              </label>
-              <input
-                type="text"
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                placeholder="Alice"
-                maxLength={50}
-                className="w-full rounded-xl px-4 py-4 text-lg border border-black/10 focus:border-black/30 focus:ring-2 focus:ring-black/10"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Bio (Optional)
-              </label>
-              <textarea
-                value={bio}
-                onChange={(e) => setBio(e.target.value)}
-                placeholder="Tell others about yourself..."
-                maxLength={280}
-                rows={3}
-                className="w-full rounded-xl px-4 py-4 border border-black/10 focus:border-black/30 focus:ring-2 focus:ring-black/10 resize-none"
-              />
-              <p className="text-xs text-gray-500 mt-1">{bio.length}/280 characters</p>
-            </div>
-
-            <button
-              onClick={register}
-              disabled={loading || !username || !displayName || username.length < 3}
-              className="w-full primary-button text-white py-4 rounded-xl font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? (
-                <span className="flex items-center justify-center">
-                  <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                  </svg>
-                  Registering...
-                </span>
-              ) : (
-                '✨ Create Profile & Start Earning'
-              )}
-            </button>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div>
+      {/* Registration Banner for unregistered users */}
+      {!isRegistered && !showRegistration && !dismissedBanner && (
+        <div className="max-w-4xl mx-auto mb-8">
+          <div className="glass-card rounded-2xl p-6 bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-100">
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <h4 className="text-xl font-bold mb-2">Want to receive tips too?</h4>
+                <p className="text-gray-700 mb-4">
+                  Register your profile to receive tips from the community and earn rewards!
+                </p>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setShowRegistration(true)}
+                    className="primary-button text-white px-6 py-2 rounded-lg font-bold hover:scale-105 transition-transform"
+                  >
+                    ✨ Register Profile
+                  </button>
+                  <button
+                    onClick={() => setDismissedBanner(true)}
+                    className="text-gray-600 text-sm hover:text-gray-800"
+                  >
+                    Maybe later
+                  </button>
+                </div>
+              </div>
+              <div className="text-5xl ml-4">💰</div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Registration Form Modal */}
+      {showRegistration && !isRegistered && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-6">
+          <div className="glass-card rounded-3xl max-w-2xl w-full p-12 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-8">
+              <div>
+                <div className="text-6xl mb-4">✨</div>
+                <h3 className="text-4xl font-bold mb-2">Register Your Tipping Profile</h3>
+                <p className="text-gray-600 text-lg">
+                  Create your profile to receive tips and start earning rewards
+                </p>
+              </div>
+              <button
+                onClick={() => setShowRegistration(false)}
+                className="text-gray-400 hover:text-black text-3xl"
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Benefits */}
+            <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-6 mb-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                <div>
+                  <div className="text-3xl mb-2">💰</div>
+                  <div className="font-bold text-sm">Receive Tips</div>
+                </div>
+                <div>
+                  <div className="text-3xl mb-2">⚡</div>
+                  <div className="font-bold text-sm">Instant Transfer</div>
+                </div>
+                <div>
+                  <div className="text-3xl mb-2">🎁</div>
+                  <div className="font-bold text-sm">Earn Rewards</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Username *
+                </label>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
+                  placeholder="alice_dev"
+                  maxLength={30}
+                  className="w-full rounded-xl px-4 py-4 text-lg border border-black/10 focus:border-black/30 focus:ring-2 focus:ring-black/10"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  3-30 characters, lowercase letters, numbers, and underscores only
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Display Name *
+                </label>
+                <input
+                  type="text"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  placeholder="Alice"
+                  maxLength={50}
+                  className="w-full rounded-xl px-4 py-4 text-lg border border-black/10 focus:border-black/30 focus:ring-2 focus:ring-black/10"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Bio (Optional)
+                </label>
+                <textarea
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
+                  placeholder="Tell others about yourself..."
+                  maxLength={280}
+                  rows={3}
+                  className="w-full rounded-xl px-4 py-4 border border-black/10 focus:border-black/30 focus:ring-2 focus:ring-black/10 resize-none"
+                />
+                <p className="text-xs text-gray-500 mt-1">{bio.length}/280 characters</p>
+              </div>
+
+              <button
+                onClick={register}
+                disabled={loading || !username || !displayName || username.length < 3}
+                className="w-full primary-button text-white py-4 rounded-xl font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? (
+                  <span className="flex items-center justify-center">
+                    <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                    Registering...
+                  </span>
+                ) : (
+                  '✨ Create Profile & Start Earning'
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* User Profile Card */}
       {currentUser && (
         <div className="max-w-3xl mx-auto mb-12">
@@ -399,13 +440,18 @@ export function TippingSystem() {
       )}
 
       {/* Community Members */}
-      <h3 className="text-3xl font-bold mb-8">💸 Tip Community Members</h3>
-      
+      <div className="mb-8">
+        <h3 className="text-3xl font-bold mb-3">💸 Tip Community Members</h3>
+        <p className="text-gray-600">
+          Send tips to anyone below - no registration required to send!
+        </p>
+      </div>
+
       {users.filter(u => u.address !== publicKey.toBase58()).length === 0 ? (
         <div className="text-center py-20 glass-card rounded-3xl">
           <div className="text-5xl mb-4">👥</div>
-          <h4 className="text-2xl font-bold mb-2">No Users Yet</h4>
-          <p className="text-gray-600">Be the first to register and start the tipping community!</p>
+          <h4 className="text-2xl font-bold mb-2">No Community Members Yet</h4>
+          <p className="text-gray-600">The community list will populate as members register their profiles</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
