@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
 
     // Update pool stats (total raised)
     // Donor count is calculated dynamically from pool_donations table
-    await updatePoolStats(pool, solAmount, donor)
+    await updatePoolStats(pool, solAmount)
 
     // Update donor stats and reward points
     await updateUserDonation(donor, solAmount, rewardPoints)

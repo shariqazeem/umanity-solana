@@ -38,6 +38,7 @@ export function TippingSystem() {
       checkRegistration()
       fetchUsers()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [publicKey])
 
   const checkRegistration = async () => {
@@ -160,7 +161,7 @@ export function TippingSystem() {
       let recipientPubkey: PublicKey
       try {
         recipientPubkey = new PublicKey(selectedUser.address)
-      } catch (e) {
+      } catch {
         setError('Invalid recipient address')
         setLoading(false)
         return

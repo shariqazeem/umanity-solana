@@ -1,34 +1,72 @@
-# Umanity - Global Donation Platform on Solana
+# Umanity - Gamified Philanthropy on Solana 🎁
 
-A decentralized donation and tipping platform built on Solana blockchain featuring one-tap donations, transparent donation pools, and instant peer-to-peer tipping.
+> **Solana Hackathon Submission** - Making generosity rewarding through blockchain technology
+
+A gamified donation and tipping platform built on Solana that rewards every act of giving with points that convert to future governance tokens. We make philanthropy **instant, transparent, and rewarding**.
+
+## 🎥 Demo
+
+- **Live App**: [https://umanity-solana.vercel.app](https://umanity-solana.vercel.app) *(Update with your deployment)*
+- **Loom Demo**: [2-minute walkthrough](https://loom.com/share/your-demo-id) *(Record and add)*
+- **Pitch Deck**: [View Full Pitch](./HACKATHON_PITCH.md)
+
+## 🏆 Hackathon Highlights
+
+**Problem Solved**: Traditional donation platforms charge 5-10% fees, take 3-5 days to process, and offer zero incentive for donors.
+
+**Our Solution**: Instant Solana transactions, zero fees, gamified rewards system where 1 SOL donated = 1,000 points → future governance tokens.
+
+**Why It Matters**: $485B global charity market, but donors get nothing back. We flip that—donors earn while giving.
 
 ## 🌟 Features
 
-### 1. One-Tap Donations ($1 donations)
-- Single-click $1 donations to verified causes
-- Instant transaction confirmation
+### 1. One-Tap Donations ($2 Quick Give)
+- Single-click $2 (0.01 SOL) donations
+- Instant transaction confirmation (<1 second)
+- **Earn 10 reward points** per donation
 - Perfect for quick support to global initiatives
 
-### 2. Donation Pools
-- Multiple verified donation pools (Medical, Education, Disaster Relief, etc.)
-- Flexible donation amounts
-- Real-time statistics and transparency
-- All transactions verifiable on-chain
+### 2. Custom Donation Pools
+- Multiple verified causes: 🏥 Medical | 📚 Education | 🆘 Disaster Relief | 💧 Water Access
+- Donate any amount (min 0.001 SOL)
+- **Earn 1,000 points per SOL** donated
+- Real-time statistics: total raised, contributor count
+- All transactions verifiable on Solscan
+- View wallet transactions for full transparency
 
-### 3. Tipping System
-- Register your wallet with username and profile
-- Send tips to anyone with a registered account
+### 3. Community Tipping System
+- Optional registration (receive tips) vs browse-only mode
+- Send tips to creators, community members, anyone
+- **Earn points on every tip** (1,000 per SOL)
 - Include personal messages with tips
-- Track total sent and received amounts
+- Track: SOL received, SOL sent, total reward points
+- No registration needed to send tips!
+
+## 🎮 Gamification & Rewards
+
+**The Hook**: Every transaction earns reward points that convert to governance tokens at launch.
+
+- **1 SOL = 1,000 points**
+- **100 points = 1 future governance token**
+- Example: Donate 0.1 SOL → earn 100 points → get 1 token at launch
+
+**Governance Token Benefits**:
+- Vote on which charities get verified
+- Decide platform fee structure (0-1%)
+- Earn staking rewards
+- Early adopter airdrops
+
+**Why This Works**: Donors get tangible value, not just warm feelings. Points accumulate in Supabase, ready for token launch.
 
 ## 🚀 Tech Stack
 
-- **Blockchain**: Solana (Devnet)
-- **Smart Contracts**: Anchor Framework (Rust)
+- **Blockchain**: Solana Devnet (ready for mainnet)
 - **Frontend**: Next.js 15, React 19, TypeScript
-- **Wallet**: Solana Wallet Adapter (Phantom, Solflare, Torus)
-- **Styling**: Tailwind CSS
-- **State Management**: React Hooks
+- **Database**: Supabase (PostgreSQL) - stores user profiles, reward points, transaction metadata
+- **Wallet Integration**: Solana Wallet Adapter (Phantom, Solflare, Torus)
+- **Styling**: Tailwind CSS with glassmorphism effects
+- **State Management**: React Hooks + Server Components
+- **Deployment**: Vercel (instant global CDN)
 
 ## 📦 Project Structure
 
@@ -197,18 +235,32 @@ NEXT_PUBLIC_SOLANA_NETWORK=mainnet-beta
 NEXT_PUBLIC_RPC_ENDPOINT=your_rpc_endpoint
 ```
 
-## 📝 Future Enhancements
+## 📝 What We'd Improve With More Time
 
-- [ ] Integration with USDC for stable $1 donations
-- [ ] Real-time price oracle for SOL/USD conversion
-- [ ] Mobile app (React Native)
-- [ ] Social features (donation feed, leaderboards)
-- [ ] NFT rewards for top donors
-- [ ] Recurring donations
-- [ ] Multi-signature pool management
-- [ ] Analytics dashboard
-- [ ] Email notifications
-- [ ] Farcaster frames integration
+*As required by hackathon submission guidelines*
+
+### Technical Improvements:
+1. **USDC Integration**: Stable donations instead of volatile SOL for predictable giving
+2. **Solana Actions & Blinks**: Donate directly from Twitter/Discord without leaving the platform
+3. **Compressed NFTs**: Issue donation receipts as cNFTs for tax purposes
+4. **Price Oracle**: Real-time SOL/USD conversion using Pyth Network
+5. **Mobile App**: React Native app with push notifications for donation updates
+
+### Product Features:
+6. **Social Proof**: Public donation feed, leaderboards, donor badges
+7. **Recurring Donations**: Set-and-forget monthly giving with auto-debit
+8. **Impact Tracking**: Photos/videos from charities showing real-world impact
+9. **Charity Onboarding**: Self-service verification flow with KYC/AML
+10. **Analytics Dashboard**: Donor insights, charity performance metrics
+
+### Business Model:
+11. **Token Launch**: Airdrop governance tokens to early donors based on points
+12. **DAO Governance**: Community votes on verified charities, fees, roadmap
+13. **Matching Campaigns**: Corporate sponsors match donations 2x-3x
+14. **NFT Marketplace**: Trade donor badges, charity-specific NFTs
+15. **Tax Integration**: Automatic 501(c)(3) receipts for US donors
+
+**Priority for Next Sprint**: USDC integration + Solana Actions would make this 10x more usable.
 
 ## 🎨 Design Philosophy
 

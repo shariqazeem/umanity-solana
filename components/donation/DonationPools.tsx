@@ -90,7 +90,7 @@ export function DonationPools() {
       let poolWallet: PublicKey
       try {
         poolWallet = new PublicKey(displayData.wallet)
-      } catch (e) {
+      } catch {
         // Fallback to treasury wallet if invalid
         poolWallet = new PublicKey('BAScBKuDXCqdHxcoqdaDrUyJtFVtjBM5wS8tLd6tsgpy')
       }

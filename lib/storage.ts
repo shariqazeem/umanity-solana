@@ -437,7 +437,7 @@ export async function getPoolById(poolId: string): Promise<Pool | null> {
 // Update pool stats after donation
 // Note: donor_count is now calculated dynamically from pool_donations
 // but we keep this function to update total_donated
-export async function updatePoolStats(poolId: string, amount: number, donorAddress: string) {
+export async function updatePoolStats(poolId: string, amount: number) {
   const pool = await getPoolById(poolId)
   if (!pool) return
 
