@@ -45,7 +45,12 @@ export function OneTapDonation() {
 
   const donate = async () => {
     if (!publicKey) {
-      alert('Please connect your wallet first!')
+      setError('Please connect your wallet first!')
+      setStatus('error')
+      setTimeout(() => {
+        setStatus('idle')
+        setError('')
+      }, 3000)
       return
     }
 

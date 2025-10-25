@@ -16,10 +16,6 @@ export async function POST(request: NextRequest) {
     // Calculate rewards using unified formula: 1 SOL = 1000 points
     const rewardPoints = calculateRewardPoints(solAmount)
 
-    // Update pool stats FIRST (total raised + donor count)
-    // This must happen before creating the donation record so the "new donor" check works
-    await updatePoolStats(pool, solAmount, donor)
-
     // Create pool donation record
     const donation = await createPoolDonation({
       donor,
@@ -33,6 +29,10 @@ export async function POST(request: NextRequest) {
     if (!donation) {
       return NextResponse.json({ error: 'Failed to record donation' }, { status: 500 })
     }
+
+    // Update pool stats (total raised)
+    // Donor count is calculated dynamically from pool_donations table
+    await updatePoolStats(pool, solAmount, donor)
 
     // Update donor stats and reward points
     await updateUserDonation(donor, solAmount, rewardPoints)

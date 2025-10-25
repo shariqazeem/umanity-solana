@@ -373,25 +373,41 @@ export interface PoolDonation {
   rewardPointsEarned: number
 }
 
-// Get all pools
+// Get all pools with accurate contributor counts from pool_donations
 export async function getAllPools(): Promise<Pool[]> {
-  const { data, error } = await supabase
+  const { data: poolsData, error } = await supabase
     .from('pools')
     .select('*')
     .order('id', { ascending: true })
 
-  if (error || !data) return []
+  if (error || !poolsData) return []
 
-  return data.map(p => ({
+  // Get all pool donations to calculate unique donor counts
+  const { data: donationsData } = await supabase
+    .from('pool_donations')
+    .select('pool_id, donor')
+
+  // Calculate unique donors per pool
+  const donorCountMap: Record<string, Set<string>> = {}
+  if (donationsData) {
+    donationsData.forEach(donation => {
+      if (!donorCountMap[donation.pool_id]) {
+        donorCountMap[donation.pool_id] = new Set()
+      }
+      donorCountMap[donation.pool_id].add(donation.donor)
+    })
+  }
+
+  return poolsData.map(p => ({
     id: p.id,
     name: p.name,
     description: p.description,
     totalDonated: parseFloat(p.total_donated) || 0,
-    donorCount: p.donor_count || 0
+    donorCount: donorCountMap[p.id]?.size || 0
   }))
 }
 
-// Get pool by ID
+// Get pool by ID with accurate contributor count
 export async function getPoolById(poolId: string): Promise<Pool | null> {
   const { data, error } = await supabase
     .from('pools')
@@ -401,34 +417,36 @@ export async function getPoolById(poolId: string): Promise<Pool | null> {
 
   if (error || !data) return null
 
+  // Get unique donor count from pool_donations
+  const { data: donations } = await supabase
+    .from('pool_donations')
+    .select('donor')
+    .eq('pool_id', poolId)
+
+  const uniqueDonors = new Set(donations?.map(d => d.donor) || [])
+
   return {
     id: data.id,
     name: data.name,
     description: data.description,
     totalDonated: parseFloat(data.total_donated) || 0,
-    donorCount: data.donor_count || 0
+    donorCount: uniqueDonors.size
   }
 }
 
 // Update pool stats after donation
+// Note: donor_count is now calculated dynamically from pool_donations
+// but we keep this function to update total_donated
 export async function updatePoolStats(poolId: string, amount: number, donorAddress: string) {
   const pool = await getPoolById(poolId)
   if (!pool) return
 
-  // Check if this is a new donor for this pool
-  const { data: existingDonations } = await supabase
-    .from('pool_donations')
-    .select('donor')
-    .eq('pool_id', poolId)
-    .eq('donor', donorAddress)
-
-  const isNewDonor = !existingDonations || existingDonations.length === 0
-
+  // Update total donated amount
+  // Donor count is calculated dynamically in getAllPools() and getPoolById()
   await supabase
     .from('pools')
     .update({
-      total_donated: pool.totalDonated + amount,
-      donor_count: pool.donorCount + (isNewDonor ? 1 : 0)
+      total_donated: pool.totalDonated + amount
     })
     .eq('id', poolId)
 }

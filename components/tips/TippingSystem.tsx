@@ -30,6 +30,8 @@ export function TippingSystem() {
   const [txSignature, setTxSignature] = useState('')
   const [showRegistration, setShowRegistration] = useState(false)
   const [dismissedBanner, setDismissedBanner] = useState(false)
+  const [error, setError] = useState('')
+  const [registrationError, setRegistrationError] = useState('')
 
   useEffect(() => {
     if (publicKey) {
@@ -95,16 +97,17 @@ export function TippingSystem() {
 
   const register = async () => {
     if (!publicKey || !username || !displayName) {
-      alert('Please fill in all required fields')
+      setRegistrationError('Please fill in all required fields')
       return
     }
 
     if (username.length < 3) {
-      alert('Username must be at least 3 characters')
+      setRegistrationError('Username must be at least 3 characters')
       return
     }
 
     setLoading(true)
+    setRegistrationError('')
     try {
       const response = await fetch('/api/register', {
         method: 'POST',
@@ -118,9 +121,9 @@ export function TippingSystem() {
       })
 
       const data = await response.json()
-      
+
       if (data.error) {
-        alert(data.error)
+        setRegistrationError(data.error)
         return
       }
 
@@ -132,7 +135,7 @@ export function TippingSystem() {
       }
     } catch (error) {
       console.error('Registration error:', error)
-      alert('Registration failed. Please try again.')
+      setRegistrationError('Registration failed. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -143,12 +146,13 @@ export function TippingSystem() {
 
     const solAmount = parseFloat(tipAmount)
     if (solAmount < 0.001) {
-      alert('Minimum tip is 0.001 SOL')
+      setError('Minimum tip is 0.001 SOL')
       return
     }
 
     setLoading(true)
     setTxSignature('')
+    setError('')
 
     try {
       const lamports = solAmount * LAMPORTS_PER_SOL
@@ -157,7 +161,8 @@ export function TippingSystem() {
       try {
         recipientPubkey = new PublicKey(selectedUser.address)
       } catch (e) {
-        alert('Invalid recipient address')
+        setError('Invalid recipient address')
+        setLoading(false)
         return
       }
 
@@ -198,20 +203,21 @@ export function TippingSystem() {
         console.error('Failed to record tip:', apiError)
       }
 
-      alert(`Successfully tipped ${solAmount} SOL to @${selectedUser.username}! 🎉\n\nYou earned 10 reward points!`)
-      
+      // Success - txSignature is set, UI will show success message
       setTimeout(() => {
         setSelectedUser(null)
         setTipAmount('')
         setMessage('')
         setTxSignature('')
+        setError('')
         fetchUsers()
         checkRegistration() // Refresh user data
-      }, 2000)
+      }, 3000)
 
     } catch (error: any) {
       console.error('Tip error:', error)
-      alert(`Tip failed: ${error.message || 'Please try again'}`)
+      setError(error.message || 'Tip failed. Please try again.')
+      setTxSignature('')
     } finally {
       setLoading(false)
     }
@@ -359,6 +365,12 @@ export function TippingSystem() {
                 />
                 <p className="text-xs text-gray-500 mt-1">{bio.length}/280 characters</p>
               </div>
+
+              {registrationError && (
+                <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700 text-sm">
+                  {registrationError}
+                </div>
+              )}
 
               <button
                 onClick={register}
@@ -535,7 +547,7 @@ export function TippingSystem() {
                   <span className="text-2xl mr-2">✓</span>
                   <span className="font-bold">Tip Sent Successfully!</span>
                 </div>
-                <p className="text-sm text-gray-700 mb-2">+10 reward points earned!</p>
+                <p className="text-sm text-gray-700 mb-2">Reward points earned!</p>
                 <a
                   href={`https://solscan.io/tx/${txSignature}?cluster=devnet`}
                   target="_blank"
@@ -544,6 +556,16 @@ export function TippingSystem() {
                 >
                   View on Solscan →
                 </a>
+              </div>
+            )}
+
+            {/* Error Display */}
+            {error && !txSignature && (
+              <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
+                <div className="flex items-center text-red-700">
+                  <span className="text-2xl mr-2">✕</span>
+                  <span className="font-bold">{error}</span>
+                </div>
               </div>
             )}
 

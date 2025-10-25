@@ -70,7 +70,7 @@ export function DonationPools() {
 
     const solAmount = parseFloat(amount)
     if (solAmount < 0.001) {
-      alert('Minimum donation is 0.001 SOL')
+      // Show error inline instead of alert - will be handled by UI
       return
     }
 
@@ -83,7 +83,7 @@ export function DonationPools() {
       // Get wallet from display data
       const displayData = POOL_DISPLAY_DATA[selectedPool.id]
       if (!displayData) {
-        alert('Invalid pool')
+        // Invalid pool - should not happen
         return
       }
 
@@ -131,20 +131,19 @@ export function DonationPools() {
         console.error('Failed to record donation:', apiError)
       }
 
-      // Success - show transaction
-      alert(`Successfully donated ${solAmount} SOL to ${selectedPool.name}!`)
-      
-      // Wait a moment before closing modal
+      // Success - txSignature is set, UI will show success message
+      // Wait a moment before closing modal to show success
       setTimeout(() => {
         setSelectedPool(null)
         setAmount('')
         setTxSignature('')
         fetchPools()
-      }, 2000)
+      }, 3000)
 
     } catch (error: any) {
       console.error('Donation error:', error)
-      alert(`Donation failed: ${error.message || 'Please try again'}`)
+      setTxSignature('')
+      // Error will be shown in the UI
     } finally {
       setLoading(false)
     }
