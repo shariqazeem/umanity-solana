@@ -157,6 +157,6 @@ Umanity is not just a donation platform—it's a **movement** to make generosity
 
 **Built with ❤️ on Solana**
 
-🔗 [GitHub](https://github.com/yourusername/umanity-solana)
+🔗 [GitHub](https://github.com/shariq/umanity-solana)
 🌐 [Live Demo](https://umanity.vercel.app)
-🎥 [Loom Demo](https://loom.com/share/your-demo-id)
+🎥 [Loom Demo](https://www.loom.com/share/e17faa18ad0e44c397e9ff341cead87b)
